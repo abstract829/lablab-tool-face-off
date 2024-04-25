@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "lablab"
+version = "0.1.0"
+description = ""
+authors = ["abstract829 <maxxii.1820@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.12,<3.13"
+llama-index = "^0.10.31"
+llama-index-vector-stores-mongodb = "^0.1.4"
+python-dotenv = "^1.0.1"
+youtube-transcript-api = "^0.6.2"
+pytube = "^15.0.0"
+cohere = "^5.3.3"
+trulens-eval = "^0.28.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

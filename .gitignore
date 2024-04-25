@@ -1,0 +1,12 @@
+#gitignore for python poetry app
+
+# Byte-compiled / optimized / DLL files
+
+.venv
+venv/
+__pycache__/
+.env
+default.sqlite
+.streamlit
+.DS_Store
+.vscode/
