@@ -14,6 +14,8 @@ youtube-transcript-api = "^0.6.2"
 pytube = "^15.0.0"
 cohere = "^5.3.3"
 trulens-eval = "^0.28.2"
+fastapi = "^0.110.2"
+hypercorn = "^0.16.0"
 
 
 [build-system]

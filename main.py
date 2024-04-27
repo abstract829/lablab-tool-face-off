@@ -2,49 +2,46 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-import os
+from fastapi import FastAPI
+from trulens_eval import TruCustomApp, Feedback
+from trulens_eval.feedback.provider import OpenAI
+from utils.load_documents import load_documents_to_vectorstore
 from utils.trulens_app import TrulensApp
-from utils.trulens_feedbacks import CustomFeedbacks
-from trulens_eval import TruCustomApp, Tru, Feedback
-
-
+from pydantic import BaseModel
 import nest_asyncio
 
 nest_asyncio.apply()
 
-tru = Tru()
-
-tru.run_dashboard()
-
-
-mongo_uri = os.getenv("MONGO_URI")
-cohere_api_key = os.getenv("COHERE_API_KEY")
+app = FastAPI()
+provider = OpenAI()
 
 
-video_url = "https://www.youtube.com/watch?v=kCc8FmEb1nY"
+class LoadData(BaseModel):
+    video_url: str
 
 
-def main():
-    custom_feedbacks = CustomFeedbacks()
+@app.post("/load")
+async def load_yt_video(data: LoadData):
+    load_documents_to_vectorstore(data.video_url)
+    return {"message": "Documents loaded to vectorstore"}
 
-    f_feedback_topic_fit = Feedback(custom_feedbacks.topic_fit).on_input_output()
 
+class QueryData(BaseModel):
+    query: str
+    video_url: str
+
+
+@app.post("/query")
+async def query(data: QueryData):
     app = TrulensApp()
 
-    tru_recorder = TruCustomApp(
-        app=app, app_id="Custom Application v2", feedbacks=[f_feedback_topic_fit]
+    f_answer_relevance = Feedback(provider.relevance).on_input_output()
+
+    tru_recorder_query = TruCustomApp(
+        app=app, app_id="QA", feedbacks=[f_answer_relevance]
     )
 
-    with tru_recorder as recording:
-        app.run_classify(
-            "I bought a new iphone yesterday. It is a great phone. I love it."
-        )
+    with tru_recorder_query as recording:
+        data = app.run_query(data.query, data.video_url)
 
-    import time
-
-    while 1:
-        time.sleep(10)
-
-
-if __name__ == "__main__":
-    main()
+    return data["response"]

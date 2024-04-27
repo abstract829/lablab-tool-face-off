@@ -42,7 +42,7 @@ class Classify(BaseModel):
 
 
 def classify(text: str):
-    llm = OpenAI(model="gpt-4", temperature=0)
+    llm = OpenAI(model="gpt-3.5-turbo", temperature=0)
 
     program = OpenAIPydanticProgram.from_defaults(
         output_cls=Classify, prompt_template_str=prompt_template_str, llm=llm
