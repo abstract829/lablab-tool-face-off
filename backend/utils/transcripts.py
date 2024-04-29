@@ -1,10 +1,11 @@
-from youtube_transcript_api import YouTubeTranscriptApi
+from youtube_transcript_api import YouTubeTranscriptApi, TranscriptList
 from pytube import YouTube
 from llama_index.core import Document
 from utils.trulens_app import TrulensApp
 from utils.trulens_feedbacks import CustomFeedbacks
 from trulens_eval import TruCustomApp, Feedback
 import json
+from utils.classify import Topics
 
 
 def classify_with_trulens(text: str):
@@ -58,9 +59,21 @@ def group_transcripts_by_character_count(transcripts, char_count):
 def get_yt_documents(video_url: str):
     yt = YouTube(video_url)
 
-    transcript_lines = YouTubeTranscriptApi.get_transcript(yt.video_id)
+    list_transcript = YouTubeTranscriptApi.list_transcripts(yt.video_id)
 
-    grouped_transcripts = group_transcripts_by_character_count(transcript_lines, 200)
+    manually_list = list_transcript._manually_created_transcripts
+    lang = "en"
+
+    for key in manually_list:
+        if key:
+            lang = key
+            break
+
+    transcript_lines = YouTubeTranscriptApi.get_transcript(
+        yt.video_id, languages=[lang]
+    )
+
+    grouped_transcripts = group_transcripts_by_character_count(transcript_lines, 400)
 
     documents = []
 
@@ -81,11 +94,13 @@ def get_yt_documents(video_url: str):
 
     for transcript in grouped_transcripts:
 
-        res = classify_with_trulens(transcript["text"])
+        # res = classify_with_trulens(transcript["text"])
 
-        topics = res["response"].topics
+        # topics = res["response"].topics
 
-        topics_arr = [topic.value for topic in topics]
+        topics = [Topics.OTHER]
+
+        topics_arr = [topic.value for topic in topics if topic.value]
 
         doc = Document(
             text=transcript["text"],

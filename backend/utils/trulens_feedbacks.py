@@ -24,7 +24,7 @@ Result:
 class Output(BaseModel):
     """Data model of the output"""
 
-    score: float = Field(..., description="The score obtained")
+    score: float = Field(default=0.0, description="The score obtained")
 
 
 class CustomFeedbacks(Provider):
@@ -38,6 +38,8 @@ class CustomFeedbacks(Provider):
             verbose=True,
         )
 
-        response = llm_program(topics=output, text=input)
-
-        return response.score / 10.0
+        try:
+            response = llm_program(topics=output, text=input)
+            return response.score / 10.0
+        except Exception as e:
+            return 0.0

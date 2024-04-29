@@ -1,13 +1,13 @@
 [tool.poetry]
-name = "lablab"
+name = "backend"
 version = "0.1.0"
 description = ""
 authors = ["abstract829 <maxxii.1820@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = ">=3.12,<3.13"
-llama-index = "^0.10.31"
+python = ">3.12,<3.13"
+llama-index = "^0.10.33"
 llama-index-vector-stores-mongodb = "^0.1.4"
 python-dotenv = "^1.0.1"
 youtube-transcript-api = "^0.6.2"

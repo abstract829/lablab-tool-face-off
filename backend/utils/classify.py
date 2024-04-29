@@ -47,9 +47,11 @@ def classify(text: str):
     program = OpenAIPydanticProgram.from_defaults(
         output_cls=Classify, prompt_template_str=prompt_template_str, llm=llm
     )
-
-    response = program(text=text)
-
-    response_str = ", ".join([topic.value for topic in response.topics])
-
-    return {"response_str": response_str, "response": response}
+    try:
+        response = program(text=text)
+        response_str = ", ".join(
+            [topic.value for topic in response.topics if topic.value]
+        )
+        return {"response_str": response_str, "response": response}
+    except Exception as e:
+        return {"response_str": "other", "response": Classify(topics=[Topics.OTHER])}

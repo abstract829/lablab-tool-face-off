@@ -13,5 +13,5 @@ class TrulensApp:
         return classify(text)
 
     @instrument
-    def run_query(self, content: str, video_url: str):
-        return query(content, video_url)
+    def run_query(self, content: str):
+        return query(content)

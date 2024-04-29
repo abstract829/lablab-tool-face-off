@@ -2,7 +2,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, status
+from fastapi.middleware.cors import CORSMiddleware
 from trulens_eval import TruCustomApp, Feedback
 from trulens_eval.feedback.provider import OpenAI
 from utils.load_documents import load_documents_to_vectorstore
@@ -10,10 +11,19 @@ from utils.trulens_app import TrulensApp
 from pydantic import BaseModel
 import nest_asyncio
 
+
 nest_asyncio.apply()
 
 app = FastAPI()
 provider = OpenAI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 class LoadData(BaseModel):
@@ -21,18 +31,18 @@ class LoadData(BaseModel):
 
 
 @app.post("/load")
-async def load_yt_video(data: LoadData):
+def load_yt_video(data: LoadData):
     load_documents_to_vectorstore(data.video_url)
     return {"message": "Documents loaded to vectorstore"}
 
 
 class QueryData(BaseModel):
     query: str
-    video_url: str
 
 
 @app.post("/query")
-async def query(data: QueryData):
+def query(data: QueryData):
+
     app = TrulensApp()
 
     f_answer_relevance = Feedback(provider.relevance).on_input_output()
@@ -42,6 +52,8 @@ async def query(data: QueryData):
     )
 
     with tru_recorder_query as recording:
-        data = app.run_query(data.query, data.video_url)
+        data = app.run_query(data.query)
+
+    print(data)
 
     return data["response"]
