@@ -1,6 +1,7 @@
 "use client";
 
 import { type Message } from "./chat-messages";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 export default function ChatAvatar(message: Message) {
   if (message.role === "user") {
@@ -19,14 +20,9 @@ export default function ChatAvatar(message: Message) {
   }
 
   return (
-    <div className="flex h-8 w-8 shrink-0 select-none items-center justify-center rounded-full border bg-white text-white">
-      <img
-        className="rounded-full"
-        src="/fai.png"
-        alt="chatbot"
-        width={32}
-        height={32}
-      />
-    </div>
+    <Avatar className="h-8 w-8">
+      <AvatarImage alt="chatbot-name" src="/fai.png" />
+      <AvatarFallback>AI</AvatarFallback>
+    </Avatar>
   );
 }

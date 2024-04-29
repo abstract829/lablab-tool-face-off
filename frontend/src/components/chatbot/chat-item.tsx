@@ -13,7 +13,7 @@ export interface Citation {
   start: number;
   end: number;
   text: string;
-  documentIds: string[];
+  document_ids: string[];
 }
 
 export interface CohereDocument {
@@ -22,6 +22,7 @@ export interface CohereDocument {
   start?: string;
   duration?: string;
   source: string;
+  topics?: string;
 }
 
 export interface ConvertedMessage {
@@ -68,18 +69,23 @@ export default function ChatItem(
 
     const [strCitations, strDocs] = strCitationsAndDocs.split("[DOCUMENTS]");
 
-    let citations = JSON.parse(strCitations || "[]") as Citation[];
-    const docs = JSON.parse(strDocs || "[]") as CohereDocument[];
+    let citations = (JSON.parse(strCitations) ?? []) as Citation[];
+    const docs = (JSON.parse(strDocs) ?? []) as CohereDocument[];
 
-    if (citations.length === 0 || docs.length === 0)
+    if (
+      citations.length === 0 ||
+      docs.length === 0 ||
+      (citations as any) === "[]" ||
+      (docs as any) === "[]"
+    )
       return [{ type: "text", content: message }];
 
     const convertedMessages: ConvertedMessage[] = [];
     let i = 0;
     let lastEnd = 0;
 
-    citations = citations.map((citation) => {
-      const { text, documentIds } = citation;
+    citations = citations?.map((citation) => {
+      const { text, document_ids } = citation;
 
       const findTextInMessage = (text: string) => {
         const idx = message.indexOf(text, i);
@@ -94,7 +100,7 @@ export default function ChatItem(
         ...citation,
         start,
         end,
-        documentIds,
+        documentIds: document_ids,
       };
     });
 
@@ -102,7 +108,7 @@ export default function ChatItem(
       const citation = citations.find((citation) => citation.start === i);
 
       if (citation) {
-        const { start, end, text, documentIds } = citation;
+        const { start, end, text, document_ids } = citation;
 
         convertedMessages.push({
           type: "text",
@@ -112,8 +118,8 @@ export default function ChatItem(
         convertedMessages.push({
           type: "citation",
           content: `${text}`,
-          documentIds,
-          docs: docs.filter((doc) => documentIds.includes(doc.id)),
+          documentIds: document_ids,
+          docs: docs.filter((doc) => document_ids.includes(doc.id)),
         });
 
         i = end;

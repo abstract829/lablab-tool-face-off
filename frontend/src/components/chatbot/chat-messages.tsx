@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import ChatItem from "./chat-item";
 import useApp from "@/context/use-app";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const suggestedQuestions = ["Talk me about the video"];
 
@@ -12,11 +13,9 @@ export interface Message {
 
 export default function ChatMessages({
   messages,
-  isLoading,
-  reload,
-  stop,
   handleInputChange,
   handleSubmit,
+  isLoading,
 }: {
   messages: Message[];
   isLoading?: boolean;
@@ -88,6 +87,20 @@ export default function ChatMessages({
         {messages.map((m: Message) => (
           <ChatItem key={m.id} {...m} />
         ))}
+
+        {isLoading && (
+          <div className="pr-2">
+            <div className="flex flex-col items-start justify-end gap-2 pt-4">
+              <div className="flex items-center gap-2">
+                <div className="w-[35px]">
+                  <Skeleton className="h-8 w-8 rounded-full" />
+                </div>
+                <div className="text-default-600 text-xs">Chatbot</div>
+              </div>
+              <Skeleton className="ml-[40px] w-[450px] h-8 break-words  rounded-xl  rounded-tl-none  px-4 py-2   text-left text-sm text-black" />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

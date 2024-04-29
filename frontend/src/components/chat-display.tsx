@@ -1,32 +1,61 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ChatInput, ChatMessages } from "./chatbot";
-import { insertDataIntoMessages } from "./chatbot/transform";
+import { ChatInput, ChatMessages, Message } from "./chatbot";
 import { Separator } from "@/components/ui/separator";
-import { useChat } from "ai/react";
-import { useMemo } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useMutationChat } from "@/hooks/chat";
 
 export function ChatDisplay() {
-  const {
-    messages,
-    input,
-    isLoading,
-    handleSubmit,
-    handleInputChange,
-    reload,
-    stop,
-    data,
-    setMessages,
-  } = useChat({
-    api: `/api/chat`,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  const chat = useMutationChat();
 
-  const transformedMessages = useMemo(() => {
-    return insertDataIntoMessages(messages, data);
-  }, [messages, data]);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [lastInput, setLastInput] = useState<string>("");
+
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+
+    if (!input || input.trim() === "") return;
+
+    setMessages((prev) => [
+      ...prev,
+      { id: crypto.randomUUID(), content: input, role: "user" },
+    ]);
+
+    setLastInput(input);
+
+    setInput("");
+  };
+
+  const handleInputChange = (e: any) => {
+    setInput(e.target.value);
+  };
+
+  const [input, setInput] = useState("");
+
+  useEffect(() => {
+    if (messages.length > 0) {
+      const lastMessage = messages[messages.length - 1];
+
+      if (lastMessage?.role === "user") {
+        chat.mutate(lastInput, {
+          onSuccess: (data) => {
+            setMessages((prev) => [
+              ...prev,
+              {
+                id: crypto.randomUUID(),
+                content: `${data.text}[CITATIONS]${JSON.stringify(
+                  data.citations || "[]"
+                )}[DOCUMENTS]${JSON.stringify(data.documents || "[]")}`,
+                role: "ai",
+              },
+            ]);
+
+            setLastInput("");
+          },
+        });
+      }
+    }
+  }, [messages]);
 
   return (
     <div className="flex h-full flex-col">
@@ -34,7 +63,7 @@ export function ChatDisplay() {
         <div className="flex h-[56px] items-start p-2">
           <div className="flex items-start gap-4 text-sm">
             <Avatar>
-              <AvatarImage alt="mail-name" src="/fai.png" />
+              <AvatarImage alt="chatbot-name" src="/fai.png" />
               <AvatarFallback>AI</AvatarFallback>
             </Avatar>
             <div className="grid gap-1">
@@ -51,12 +80,10 @@ export function ChatDisplay() {
         </div>
         <Separator />
         <ChatMessages
-          messages={transformedMessages}
-          isLoading={isLoading}
-          reload={reload}
-          stop={stop}
+          messages={messages}
           handleSubmit={handleSubmit}
           handleInputChange={handleInputChange}
+          isLoading={chat.isPending}
         />
         <Separator className="mt-4" />
         <div className="p-4">
@@ -64,7 +91,6 @@ export function ChatDisplay() {
             input={input}
             handleSubmit={handleSubmit}
             handleInputChange={handleInputChange}
-            isLoading={isLoading}
             multiModal={false}
           />
         </div>

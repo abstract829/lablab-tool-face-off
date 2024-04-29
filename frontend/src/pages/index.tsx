@@ -25,7 +25,7 @@ interface Props {
 }
 
 export default function HomePage({
-  defaultLayout = [265, 440, 655],
+  defaultLayout = [440, 655],
   defaultCollapsed = false,
   navCollapsedSize,
 }: Props) {
@@ -42,36 +42,17 @@ export default function HomePage({
         onLayout={(sizes: number[]) => {}}
         className="h-full max-h-[800px] items-stretch"
       >
-        <ResizablePanel
-          defaultSize={defaultLayout[0]}
-          collapsedSize={navCollapsedSize}
-          collapsible={false}
-          minSize={15}
-          maxSize={20}
-        >
-          <div className={cn("flex h-[56px] items-center justify-center px-2")}>
-            <VideoInserter />
-          </div>
-          <Separator />
-        </ResizablePanel>
-        <ResizableHandle withHandle />
-        <ResizablePanel defaultSize={defaultLayout[1]} minSize={30}>
+        <ResizablePanel defaultSize={50} minSize={30}>
           <Tabs defaultValue="video">
-            <div className="flex items-center px-4 py-2">
-              <h1 className="text-xl font-bold">{currentVideoUrl}</h1>
-              <TabsList className="ml-auto">
-                <TabsTrigger
-                  value="video"
-                  className="text-zinc-600 dark:text-zinc-200"
-                >
-                  Video
-                </TabsTrigger>
-              </TabsList>
+            <div className="flex items-center justify-between px-4 py-2">
+              <VideoInserter />
             </div>
             <Separator />
             <div className="pt-4">
               <TabsContent value="video" className="m-0">
                 <div className="px-4">
+                  <h1 className="text-xl font-bold mb-4">{currentVideoUrl}</h1>
+
                   {id && (
                     <YouTube
                       videoId={id}
@@ -94,7 +75,7 @@ export default function HomePage({
           </Tabs>
         </ResizablePanel>
         <ResizableHandle withHandle />
-        <ResizablePanel defaultSize={defaultLayout[2]} minSize={40}>
+        <ResizablePanel defaultSize={50} minSize={40}>
           <ChatDisplay />
         </ResizablePanel>
       </ResizablePanelGroup>

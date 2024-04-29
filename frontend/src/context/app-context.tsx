@@ -1,3 +1,4 @@
+import { ConvertedMessage } from "@/components/chatbot/chat-item";
 import React, { createContext } from "react";
 
 type AppContextType = {
@@ -5,8 +6,8 @@ type AppContextType = {
   setCurrentVideoUrl: (url: string) => void;
   start: number;
   setStart: (start: number) => void;
-  selectedMessage: any;
-  setSelectedMessage: (message: any) => void;
+  selectedMessage: ConvertedMessage | null;
+  setSelectedMessage: (message: ConvertedMessage | null) => void;
 };
 
 export const AppContext = createContext<AppContextType>({} as AppContextType);
@@ -17,7 +18,8 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   );
   const [start, setStart] = React.useState(0);
 
-  const [selectedMessage, setSelectedMessage] = React.useState();
+  const [selectedMessage, setSelectedMessage] =
+    React.useState<ConvertedMessage | null>(null);
 
   return (
     <AppContext.Provider
