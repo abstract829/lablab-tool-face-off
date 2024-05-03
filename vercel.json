@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "frontend/src/pages/**": {
+      "maxDuration": 300
+    }
+  }
+}
