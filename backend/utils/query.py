@@ -24,17 +24,8 @@ def query(content: str):
     #         MetadataFilter(key="source", operator=FilterOperator.EQ, value=video_url)
     #     ]
     # )
-    print("-----------")
-    print("-----------")
-    print("-----------")
-    print("-----------")
-    print("QUERY IS :", content)
-    print("-----------")
-    print("-----------")
-    print("-----------")
-    print("-----------")
 
-    retriever = VectorStoreIndex.from_vector_store(vector_store=store).as_retriever()
+    retriever = VectorStoreIndex.from_vector_store(vector_store=store).as_retriever(similarity_top_k=5)
     nodes = retriever.retrieve(content)
 
     print(len(nodes))

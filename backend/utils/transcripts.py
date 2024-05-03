@@ -94,11 +94,9 @@ def get_yt_documents(video_url: str):
 
     for transcript in grouped_transcripts:
 
-        # res = classify_with_trulens(transcript["text"])
+        res = classify_with_trulens(transcript["text"])
 
-        # topics = res["response"].topics
-
-        topics = [Topics.OTHER]
+        topics = res["response"].topics
 
         topics_arr = [topic.value for topic in topics if topic.value]
 
