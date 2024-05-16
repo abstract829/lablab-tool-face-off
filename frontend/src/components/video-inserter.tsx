@@ -8,7 +8,7 @@ import useApp from "@/context/use-app";
 
 export function VideoInserter() {
   const [inputValue, setInputValue] = React.useState(
-    "https://youtu.be/bZQun8Y4L2A"
+    "https://www.youtube.com/watch?v=75Hv0RUFIrQ"
   );
 
   const load = useMutationLoadVideo();

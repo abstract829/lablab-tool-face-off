@@ -14,7 +14,7 @@ export const AppContext = createContext<AppContextType>({} as AppContextType);
 
 export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   const [currentVideoUrl, setCurrentVideoUrl] = React.useState(
-    "https://youtu.be/bZQun8Y4L2A"
+    "https://www.youtube.com/watch?v=75Hv0RUFIrQ"
   );
   const [start, setStart] = React.useState(0);
 

@@ -10,12 +10,10 @@ function formatSeconds(seconds: number) {
 }
 
 const TOPICS_MAP: { [x: string]: string } = {
-  technology: "Technology",
-  entertainment: "Entertainment",
-  bussiness: "Business",
-  politics: "Politics",
-  self_development: "Self Development",
-  other: "Other",
+  neutral: "Neutral",
+  negative: "Negative",
+  positive: "Positive",
+  frustrating: "Frustrating",
 };
 
 export function CitationsList() {
