@@ -37,7 +37,7 @@ export default function HomePage({
 
   return (
     <TooltipProvider delayDuration={0}>
-      <div className="grid grid-cols-12">
+      <div className="grid grid-cols-1 md:grid-cols-12">
         <div className="col-span-6 border-r">
           <Tabs defaultValue="video">
             <div className="flex items-center justify-between px-4 py-2">
