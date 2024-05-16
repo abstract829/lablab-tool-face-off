@@ -37,12 +37,8 @@ export default function HomePage({
 
   return (
     <TooltipProvider delayDuration={0}>
-      <ResizablePanelGroup
-        direction="horizontal"
-        onLayout={(sizes: number[]) => {}}
-        className="h-full max-h-[800px] items-stretch"
-      >
-        <ResizablePanel defaultSize={50} minSize={30}>
+      <div className="grid grid-cols-12">
+        <div className="col-span-6 border-r">
           <Tabs defaultValue="video">
             <div className="flex items-center justify-between px-4 py-2">
               <VideoInserter />
@@ -73,12 +69,11 @@ export default function HomePage({
               </TabsContent>
             </div>
           </Tabs>
-        </ResizablePanel>
-        <ResizableHandle withHandle />
-        <ResizablePanel defaultSize={50} minSize={40}>
+        </div>
+        <div className="col-span-6">
           <ChatDisplay />
-        </ResizablePanel>
-      </ResizablePanelGroup>
+        </div>
+      </div>
     </TooltipProvider>
   );
 }
