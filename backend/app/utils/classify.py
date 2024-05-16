@@ -9,16 +9,14 @@ prompt_template_str = """\
 You will receive a text extracted from a youtube video transcript.
 You task is to classify the text into one or more of the following topics:
 
-- Technology
-- Entertainment
-- Bussiness
-- Politics
-- Self Development
-- Other
+- Positive
+- Negative
+- Frustrating
+- Neutral
 
 Classify the text in the topics that you think are according to the text.
 
-If you think the text does not fit in any of the topics, you can select "Other".
+If you think the text does not fit in any of the topics, you can select "Neutral".
 
 Text: "{text}"
 """
@@ -27,12 +25,10 @@ Text: "{text}"
 class Topics(Enum):
     """Topics a text can be about"""
 
-    TECHNOLOGY = "technology"
-    ENTERNAIMENT = "entertainment"
-    BUSSINESS = "bussiness"
-    POLITICS = "politics"
-    SELF_DEVELOPMENT = "self_development"
-    OTHER = "other"
+    FRUSTRATING = "frustrating"
+    NEGATIVE = "negative"
+    POSITIVE = "positive"
+    NEUTRAL = "neutral"
 
 
 class Classify(BaseModel):
@@ -42,7 +38,7 @@ class Classify(BaseModel):
 
 
 def classify(text: str):
-    llm = OpenAI(model="gpt-3.5-turbo", temperature=0)
+    llm = OpenAI(model="gpt-4o", temperature=0)
 
     program = OpenAIPydanticProgram.from_defaults(
         output_cls=Classify, prompt_template_str=prompt_template_str, llm=llm
@@ -54,4 +50,4 @@ def classify(text: str):
         )
         return {"response_str": response_str, "response": response}
     except Exception as e:
-        return {"response_str": "other", "response": Classify(topics=[Topics.OTHER])}
+        return {"response_str": "neutral", "response": Classify(topics=[Topics.NEUTRAL])}
